@@ -1,795 +1,1539 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="__variable_c393a4">
-   <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="css/50f0c7862653ee97.css" data-precedence="next">
-      <link rel="stylesheet" href="css/theme.css">
-      <style id="dynamic-theme-colors"> :root {
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dra. Ana Beatriz Fontes — Psicóloga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* --- TEMA PADRÃO (GREIGE/BEGE) --- */
+  :root {
+    --cream: #F7F3EE;
+    --warm: #EDE5D8;
+    --sage: #8A9E8C;
+    --sage-light: #B5C9B7;
+    --brown: #6B4E37;
+    --brown-light: #9C7A5E;
+    --charcoal: #2C2825;
+    --gold: #C4A96A;
+    --gold-light: #E8D5A3;
+    --text: #3A3330;
+    --text-light: #7A6E68;
+  }
 
-    
+  html { scroll-behavior: smooth; }
 
-    /* 1. PRINCIPAL (Cinza Quente) */
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
 
-    --p-h: 40;
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+    opacity: 0.6;
+  }
 
-    --p-s: 12%;
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
 
+  /* LOADER */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--charcoal);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: var(--cream);
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.3s forwards;
+  }
+  .loader-line {
+    width: 0; height: 1px;
+    background: var(--gold);
+    animation: expandLine 1.5s ease 0.8s forwards;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes expandLine {
+    to { width: 200px; }
+  }
 
+  /* BUTTERFLIES */
+  .butterfly-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    overflow: hidden;
+  }
+  .butterfly {
+    position: absolute;
+    opacity: 0;
+    animation: butterflyFloat linear infinite;
+    will-change: transform;
+  }
+  .butterfly svg {
+    animation: butterflyWing ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 6px rgba(196,169,106,0.4));
+  }
+  @keyframes butterflyFloat {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+    5%   { opacity: 1; }
+    25%  { transform: translate(var(--dx1), var(--dy1)) rotate(var(--r1)); }
+    50%  { transform: translate(var(--dx2), var(--dy2)) rotate(var(--r2)); }
+    75%  { transform: translate(var(--dx3), var(--dy3)) rotate(var(--r3)); }
+    95% { opacity: 0.6; }
+    100% { transform: translate(var(--dx4), var(--dy4)) rotate(var(--r4)); opacity: 0; }
+  }
+  @keyframes butterflyWing {
+    0%   { transform: scaleX(1); }
+    100% { transform: scaleX(0.25); }
+  }
 
-    /* 2. DESTAQUE (Ouro Velho) */
+  /* LOADER BUTTERFLIES */
+  .loader-butterfly {
+    position: absolute;
+    opacity: 0;
+    animation: loaderBfly ease-in-out forwards;
+    filter: drop-shadow(0 0 8px rgba(196,169,106,0.6));
+  }
+  .loader-butterfly svg {
+    animation: butterflyWing 0.35s ease-in-out infinite alternate;
+  }
+  @keyframes loaderBfly {
+    0%   { opacity: 0; transform: translate(0,30px) scale(0.5); }
+    30%  { opacity: 1; transform: translate(0,0) scale(1); }
+    70%  { opacity: 0.8; }
+    100% { opacity: 0; transform: translate(var(--lx), var(--ly)) scale(0.6); }
+  }
 
-    --s-h: 45;
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(247, 243, 238, 0.92);
+    backdrop-filter: blur(12px);
+    padding: 18px 60px;
+    border-bottom: 1px solid rgba(196, 169, 106, 0.2);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--charcoal);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: var(--charcoal);
+    padding: 12px 28px;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--charcoal); }
 
-    --s-s: 50%;
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 80px 80px 80px;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    animation: heroReveal 1.2s ease 1.8s forwards;
+  }
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-tag {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--gold);
+  }
+  .hero-h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 5.5vw, 6rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--charcoal);
+    margin-bottom: 32px;
+  }
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--brown-light);
+  }
+  .hero-desc {
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.9;
+    color: var(--text-light);
+    max-width: 400px;
+    margin-bottom: 52px;
+  }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: var(--charcoal);
+    padding: 18px 40px;
+    text-decoration: none;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+  .btn-primary:hover { color: var(--charcoal); }
+  .btn-primary:hover::after { transform: scaleX(1); }
+  .btn-ghost {
+    font-size: 0.72rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s;
+  }
+  .btn-ghost svg { transition: transform 0.3s; }
+  .btn-ghost:hover { color: var(--charcoal); }
+  .btn-ghost:hover svg { transform: translateX(5px); }
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(196, 169, 106, 0.25);
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--charcoal);
+  }
+  .stat-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
 
+  /* HERO RIGHT — real photo */
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: heroReveal 1.2s ease 2s forwards;
+  }
+  .hero-photo-wrap {
+    position: absolute;
+    inset: 0;
+  }
+  .hero-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+  /* soft vignette at bottom */
+  .hero-photo-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(transparent, rgba(44,40,37,0.35));
+  }
+  .hero-photo-name {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
+    background: rgba(247, 243, 238, 0.92);
+    backdrop-filter: blur(10px);
+    padding: 24px 28px;
+    border-left: 3px solid var(--gold);
+    z-index: 3;
+  }
+  .photo-name-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--charcoal);
+  }
+  .photo-crp {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+  .hero-deco-circle {
+    position: absolute;
+    top: 10%; right: -60px;
+    width: 200px; height: 200px;
+    border: 1px solid rgba(196,169,106,0.3);
+    border-radius: 50%;
+    animation: rotate 20s linear infinite;
+    z-index: 2;
+  }
+  @keyframes rotate { to { transform: rotate(360deg); } }
 
+  /* ABOUT */
+  #sobre {
+    padding: 140px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 100px;
+    align-items: center;
+    position: relative;
+  }
+  #sobre::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-img-wrap {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    position: relative;
+  }
+  .about-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+  .about-img-wrap:hover img { transform: scale(1.03); }
+  .about-img-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(44,40,37,0.2) 100%);
+    z-index: 1;
+  }
+  .about-deco-rect {
+    position: absolute;
+    bottom: -30px; right: -30px;
+    width: 70%; height: 70%;
+    border: 1px solid var(--gold);
+    z-index: -1;
+  }
+  .about-badge {
+    position: absolute;
+    top: 30px; left: -30px;
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 20px 24px;
+    text-align: center;
+    z-index: 2;
+  }
+  .badge-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    line-height: 1;
+  }
+  .badge-text {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-top: 6px;
+  }
+  .about-content { position: relative; }
+  .section-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--gold);
+  }
+  .section-h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--charcoal);
+    margin-bottom: 28px;
+  }
+  .section-h2 em { font-style: italic; color: var(--brown-light); }
+  .about-text {
+    font-size: 0.92rem;
+    font-weight: 300;
+    line-height: 2;
+    color: var(--text-light);
+    margin-bottom: 20px;
+  }
+  .about-quals {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 40px;
+  }
+  .qual-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .qual-dot {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .qual-text {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
 
-    /* --- FÓRMULAS (NÃO MEXER) --- */
+  /* ESPECIALIDADES */
+  #especialidades {
+    padding: 120px 80px;
+    background: var(--charcoal);
+    position: relative;
+    overflow: hidden;
+  }
+  #especialidades::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border: 1px solid rgba(196,169,106,0.1);
+    border-radius: 50%;
+  }
+  #especialidades::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -150px;
+    width: 400px; height: 400px;
+    border: 1px solid rgba(196,169,106,0.08);
+    border-radius: 50%;
+  }
+  .esp-header {
+    text-align: center;
+    margin-bottom: 80px;
+    position: relative;
+    z-index: 2;
+  }
+  .esp-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .esp-h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+  .esp-h2 em { font-style: italic; color: var(--gold-light); }
+  .esp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    position: relative;
+    z-index: 2;
+  }
+  .esp-card {
+    background: rgba(247,243,238,0.04);
+    padding: 52px 40px;
+    border: 1px solid rgba(196,169,106,0.1);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+  .esp-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+  .esp-card:hover {
+    background: rgba(196,169,106,0.08);
+    transform: translateY(-4px);
+  }
+  .esp-card:hover::before { transform: scaleX(1); }
+  .esp-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 28px;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+  .esp-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    font-weight: 300;
+    color: rgba(196,169,106,0.15);
+    position: absolute;
+    top: 20px; right: 30px;
+    line-height: 1;
+  }
+  .esp-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .esp-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.9;
+    color: rgba(247,243,238,0.5);
+  }
 
-    --brand-50:  hsl(var(--p-h), var(--p-s), 98%);
+  /* PROCESSO */
+  #processo {
+    padding: 140px 80px;
+    position: relative;
+  }
+  .processo-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 100px;
+    align-items: center;
+  }
+  .processo-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .step {
+    display: flex;
+    gap: 28px;
+    padding: 36px 0;
+    border-bottom: 1px solid rgba(196,169,106,0.2);
+    transition: all 0.3s;
+    cursor: none;
+  }
+  .step:first-child { border-top: 1px solid rgba(196,169,106,0.2); }
+  .step:hover .step-num { color: var(--gold); opacity: 1; }
+  .step:hover { padding-left: 12px; }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--gold);
+    opacity: 0.4;
+    line-height: 1;
+    padding-top: 4px;
+    transition: all 0.3s;
+    min-width: 30px;
+  }
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+  .step-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--text-light);
+  }
+  .processo-quote {
+    position: relative;
+    padding: 60px;
+    background: var(--warm);
+  }
+  .processo-quote::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12rem;
+    color: var(--gold);
+    opacity: 0.2;
+    position: absolute;
+    top: -20px; left: 20px;
+    line-height: 1;
+  }
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--charcoal);
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+  }
+  .quote-author {
+    margin-top: 28px;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    position: relative;
+    z-index: 2;
+  }
+  .quote-deco {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 120px; height: 120px;
+    background: var(--sage-light);
+    opacity: 0.3;
+  }
 
-    --brand-100: hsl(var(--p-h), var(--p-s), 94%);
+  /* DEPOIMENTOS */
+  #depoimentos {
+    padding: 120px 80px;
+    background: linear-gradient(160deg, var(--charcoal) 0%, #3A2E28 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .dep-header { text-align: center; margin-bottom: 80px; }
+  .dep-h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: 300;
+    color: var(--cream);
+  }
+  .dep-h2 em { font-style: italic; color: var(--gold-light); }
+  .dep-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .dep-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .dep-card {
+    background: rgba(247,243,238,0.05);
+    border: 1px solid rgba(196,169,106,0.15);
+    padding: 44px 36px;
+    transition: all 0.4s;
+  }
+  .dep-card:hover {
+    background: rgba(247,243,238,0.08);
+    transform: translateY(-6px);
+  }
+  .dep-stars {
+    color: var(--gold);
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    margin-bottom: 24px;
+  }
+  .dep-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(247,243,238,0.8);
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+  .dep-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .dep-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brown-light), var(--brown));
+  }
+  .dep-name {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--cream);
+    letter-spacing: 0.08em;
+  }
+  .dep-role {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: rgba(247,243,238,0.4);
+    margin-top: 2px;
+  }
 
-    --brand-200: hsl(var(--p-h), var(--p-s), 86%);
+  /* CTA SECTION */
+  #contato {
+    padding: 160px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+    position: relative;
+  }
+  #contato::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .cta-desc {
+    font-size: 0.92rem;
+    font-weight: 300;
+    line-height: 2;
+    color: var(--text-light);
+    margin-bottom: 48px;
+  }
+  .cta-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .info-icon {
+    width: 40px; height: 40px;
+    background: var(--warm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--gold);
+  }
+  .info-text {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+  .info-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2px;
+  }
+  .cta-form {
+    background: var(--warm);
+    padding: 56px 48px;
+    position: relative;
+  }
+  .cta-form::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+  }
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+  .form-sub {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--text-light);
+    margin-bottom: 36px;
+  }
+  .form-group { margin-bottom: 22px; }
+  .form-label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(107,78,55,0.3);
+    padding: 10px 0;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.3s;
+    cursor: none;
+  }
+  .form-input:focus { border-bottom-color: var(--gold); }
+  .form-input::placeholder { color: rgba(107,78,55,0.4); }
+  .form-select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(107,78,55,0.3);
+    padding: 10px 0;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.3s;
+    cursor: none;
+    appearance: none;
+  }
+  .form-select:focus { border-bottom-color: var(--gold); }
+  .form-btn {
+    width: 100%;
+    background: var(--charcoal);
+    color: var(--cream);
+    border: none;
+    padding: 18px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.4s;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .form-btn:hover { color: var(--charcoal); }
+  .form-btn:hover::after { transform: scaleX(1); }
+  .form-btn span { position: relative; z-index: 1; }
+  .form-privacy {
+    font-size: 0.68rem;
+    font-weight: 300;
+    color: var(--text-light);
+    text-align: center;
+    margin-top: 16px;
+    opacity: 0.7;
+  }
 
-    --brand-300: hsl(var(--p-h), var(--p-s), 74%);
+  /* FOOTER */
+  footer {
+    background: var(--charcoal);
+    padding: 60px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: 0.1em;
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy {
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: rgba(247,243,238,0.3);
+    letter-spacing: 0.1em;
+  }
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(247,243,238,0.4);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
 
-    --brand-500: hsl(var(--p-h), var(--p-s), 50%);
+  /* FLOATING WHATSAPP */
+  .whatsapp-float {
+    position: fixed;
+    bottom: 40px; right: 40px;
+    width: 58px; height: 58px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    box-shadow: 0 8px 32px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+  .whatsapp-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 40px rgba(37, 211, 102, 0.5);
+  }
+  .whatsapp-float svg { width: 28px; height: 28px; fill: white; }
 
-    --brand-600: hsl(var(--p-h), var(--p-s), 39%);
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
 
-    --brand-700: hsl(var(--p-h), var(--p-s), 30%);
-
-    --brand-900: hsl(var(--p-h), var(--p-s), 13%);
-
-
-
-    --accent-50:  hsl(var(--s-h), var(--s-s), 98%);
-
-    --accent-100: hsl(var(--s-h), var(--s-s), 96%);
-
-    --accent-200: hsl(var(--s-h), var(--s-s), 90%);
-
-    --accent-300: hsl(var(--s-h), var(--s-s), 80%);
-
-    --accent-500: hsl(var(--s-h), var(--s-s), 62%);
-
-    --accent-600: hsl(var(--s-h), var(--s-s), 50%);
-
-}
-
- </style>
-      <script src="js/script.js"></script>
-      <title>Psicóloga Aline</title>
-      <meta name="description" content="Atendimento psicológico com acolhimento e empatia. Sessões online.">
-      <meta name="author" content="Aline">
-      <meta name="keywords" content="psicóloga,psicoterapia,terapia online,saúde mental,acolhimento">
-      <meta name="robots" content="index, follow">
-      <link rel="canonical" href="https://alinecaicedo.vercel.app">
-      <meta property="og:title" content="Psicóloga Aline">
-      <meta property="og:description" content="Atendimento psicológico com acolhimento e empatia. Sessões online.">
-      <meta property="og:url" content="https://alinecaicedo.vercel.app">
-      <meta property="og:site_name" content="Aline - Psicóloga">
-      <meta property="og:locale" content="pt-BR">
-      <meta property="og:image" content="https://alinecaicedo.vercel.app/images/perfil1.webp">
-      <meta property="og:image:alt" content="Aline - Psicóloga Clínica">
-      <meta property="og:image:type" content="image/webp">
-      <meta property="og:image:width" content="1200">
-      <meta property="og:image:height" content="630">
-      <meta property="og:type" content="website">
-      <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:title" content="Psicóloga Aline">
-      <meta name="twitter:description" content="Atendimento psicológico com acolhimento e empatia. Sessões online.">
-      <meta name="twitter:image" content="https://alinecaicedo.vercel.app/perfil1.webp">
-      <link rel="icon" href="images/perfil1.webp">
-      <meta name="next-size-adjust">
-      <script src="js/polyfills-78c92fac7aa8fdd8.js" nomodule=""></script>
-      <script src="https://unpkg.com/lucide@latest"></script>
-      <style>
-   @media (max-width: 768px) {
-      ::-webkit-scrollbar {
-         display: none;
-      }
-      html {
-         scrollbar-width: none;
-         -ms-overflow-style: none;
-      }
-   }
-
-   /* OTIMIZAÇÃO FAQ (Altura via JS - Infalível) */
-   .faq-wrapper {
-      height: 0;
-      overflow: hidden;
-      
-      /* Removemos display: grid e opacity */
-   }
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 24px 28px; }
+    nav.scrolled { padding: 16px 28px; }
+    .nav-links, .nav-cta { display: none; }
+    #hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 120px 28px 60px; }
+    .hero-right { height: 80vw; min-height: 360px; }
+    #sobre, #contato { grid-template-columns: 1fr; padding: 80px 28px; gap: 60px; }
+    #especialidades, #depoimentos { padding: 80px 28px; }
+    .esp-grid, .dep-grid { grid-template-columns: 1fr; }
+    #processo { padding: 80px 28px; }
+    .processo-inner { grid-template-columns: 1fr; }
+    footer { padding: 40px 28px; flex-direction: column; text-align: center; }
+    .hero-stats { gap: 28px; }
+    .about-badge { left: 10px; top: 10px; }
+  }
 </style>
+</head>
+<body>
 
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-   </head>
-   <body>
-      <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Aline - Psicóloga","url":"https://alinecaicedo.vercel.app","image":"https://alinecaicedo.vercel.app/perfil1.webp","description":"Atendimento psicológico humanizado, com sessões online e presenciais. Acolhimento e autoconhecimento.","telephone":"(77) 99934-0546","address":{"@type":"PostalAddress","addressCountry":"BR"},"areaServed":"BR"}</script>
-      <header class="sticky top-0 z-50 backdrop-blur-lg bg-white/90 border-b border-neutral-200/50 shadow-sm">
-         <div class="container">
-            <div class="flex items-center justify-between py-4">
-               <a class="flex items-center gap-3 group" href="#inicio">
-                  <div class="relative w-10 sm:w-12 h-10 sm:h-12 overflow-hidden rounded-2xl bg-gradient-to-br from-brand-100 to-brand-50 p-1 group-hover:scale-105 transition-transform duration-200">
-                     <div class="relative w-10 sm:w-12 h-10 sm:h-12 overflow-hidden rounded-2xl bg-gradient-to-br from-brand-100 to-brand-50 p-1 group-hover:scale-105 transition-transform duration-200 shadow-sm">
-   
-   <div class="relative w-full h-full rounded-xl overflow-hidden flex items-center justify-center p-1">
-      
-      <svg class="w-full h-full text-brand-600" xmlns="http://www.w3.org/2000/svg" viewBox="40 0 400 400" fill="currentColor" role="img" aria-label="Símbolo Psi">
-         <path d="m217.79 169.05q25.199 0 38.169-8.5231 13.155-8.5231 17.416-20.752 4.4448-12.229 5.7425-40.763 1.2972-31.684 14.082-47.062 12.97-15.564 42.43-15.564v7.0409q-10.561 0.74103-14.452 8.3378-3.705 7.4114-3.705 31.684 0 35.575-7.5966 55.03-7.4111 19.27-30.016 31.313-22.605 12.043-62.071 12.97v58.735q0 21.678 2.4074 28.163 2.5953 6.2997 10.561 10.191 8.1528 3.8911 25.014 3.8911v6.8556h-111.54v-6.8556q16.49-0.18797 24.458-3.5206 8.1526-3.5206 10.747-10.006 2.7772-6.6702 2.7772-28.719v-58.735q-39.836-0.9259-61.885-12.785-22.049-11.858-30.016-30.943-7.7816-19.27-7.7816-55.771 0-23.346-3.5229-30.943-3.5229-7.7821-14.637-8.8938v-7.0408q18.714 0.36974 30.201 5.9292 11.488 5.5585 18.343 19.64 7.0408 14.082 7.9673 37.057 1.2972 28.349 5.3724 40.577 4.2629 12.229 17.602 20.937 13.341 8.5231 38.354 8.5231v-80.784q0-21.678-2.5953-27.978-2.4074-6.485-10.376-10.191-7.9671-3.7055-25.014-3.891v-6.8556h111.54v6.8556q-17.046 0.18798-25.014 3.891-7.9671 3.5208-10.561 10.006-2.4074 6.4851-2.4074 28.163z"/>
-      </svg>
-   </div>
-   </div>
-                  </div>
-                  <div class="block">
-                     <h1 id="header-nome" class="font-display text-lg sm:text-xl font-semibold text-brand-700 group-hover:text-brand-600 transition-colors">Aline</h1>
-                     <p class="text-xs text-neutral-500 -mt-1">Psicóloga <span id="header-tipo">Clínica</span></p>
-                  </div>
-               </a>
-               <nav class="hidden lg:flex items-center gap-8">
-                  <div class="flex items-center gap-6 text-sm font-medium"><a href="#inicio" class="text-neutral-700 hover:text-brand-600 transition-colors relative group">Início<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-600 transition-all group-hover:w-full"></span></a><a href="#sobre" class="text-neutral-700 hover:text-brand-600 transition-colors relative group">Sobre mim<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-600 transition-all group-hover:w-full"></span></a><a href="#servicos" class="text-neutral-700 hover:text-brand-600 transition-colors relative group">Serviços<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-600 transition-all group-hover:w-full"></span></a><a href="#duvidas" class="text-neutral-700 hover:text-brand-600 transition-colors relative group">Dúvidas<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-600 transition-all group-hover:w-full"></span></a></div>
-                  <a href="#contato" class="inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 px-6 py-2.5 text-white text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                     </svg>
-                     Agendar Consulta
-                  </a>
-               </nav>
-               <button class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-neutral-600 hover:text-brand-600 hover:bg-brand-50 transition-colors" aria-label="Menu">
-                  <svg class="w-6 h-6 transition-transform duration-200 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                  </svg>
-               </button>
-            </div>
-         </div>
-      </header>
-      <section id="inicio" class="relative overflow-hidden min-h-screen flex items-center">
-         <div class="absolute inset-0 -z-10 bg-gradient-to-br from-brand-50 via-white to-neutral-50"></div>
-         <div class="absolute top-20 right-10 w-72 h-72 bg-brand-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-pulse"></div>
-         <div class="absolute bottom-20 left-10 w-80 h-80 bg-accent-200 rounded-full mix-blend-multiply filter blur-2xl opacity-25 animate-pulse delay-1000"></div>
-         <div class="container relative py-8 lg:py-20">
-            <div class="flex flex-col lg:grid lg:grid-cols-2 lg:items-center gap-12 lg:gap-16">
-               <div class="relative order-1 lg:order-2">
-                  <div class="relative mx-auto max-w-sm lg:max-w-full">
-                     <div class="absolute -top-4 -left-4 w-20 h-20 bg-brand-300 rounded-full opacity-30 blur-lg"></div>
-                     <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-accent-300 rounded-full opacity-25 blur-lg"></div>
-                     <div class="text-center mb-6">
-                        <p class="text-brand-600 font-semibold text-lg sm:text-xl tracking-wide">PSICÓLOGA <span id="hero-tipo">CLÍNICA</span></p>
-                     </div>
-                     <div class="relative backdrop-blur-sm bg-white/20 border border-white/30 rounded-3xl p-4 shadow-2xl">
-                        <div class="relative w-full rounded-2xl overflow-hidden shadow-2xl"><img id="hero-img" alt="Aline" src="images/perfil1.webp" class="w-full block img-quadrada"></div>
-                     </div>
-                     <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border border-white/50 rounded-2xl px-4 py-2 shadow-lg">
-                        <div class="flex items-center gap-2 text-sm">
-                           <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                           <span class="font-medium text-gray-700">Disponível para consultas</span>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="order-2 lg:order-1 text-center lg:text-left">
-                  <div class="inline-flex items-center gap-2 bg-brand-100/80 text-brand-700 px-4 py-2 rounded-full text-sm font-medium mb-6 lg:mb-8">
-                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                     </svg>
-                     Psicóloga <span id="hero-tipo-small">Clínica</span>CRP <span id="hero-crp">05/5151</span>
-                  </div>
-                  <h1 id="hero-titulo" class="font-display text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight text-gray-900 mb-6">
-                     Cuidar da mente é o primeiro passo para uma <span class="text-brand-600">vida leve</span>
-                  </h1>
-                  <p id="hero-subtitulo" class="text-lg lg:text-xl text-gray-600 leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">
-                     Atendimento psicológico humanizado, focado em acolhimento, autoconhecimento e bem-estar emocional.
-                     <span class="font-medium text-gray-700">
-                        Sessões online.
-                     </span>
-                  </p>
-                  <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                     <a href="#contato" class="group inline-flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 px-8 py-4 text-white font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                        <svg class="w-5 h-5 transition-transform group-hover:rotate-12" fill="currentColor" viewBox="0 0 20 20">
-                           <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                        </svg>
-                        Agendar Consulta
-                     </a>
-                     <a href="#sobre" class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-neutral-200 hover:border-brand-300 px-8 py-4 text-neutral-700 hover:text-brand-600 font-medium transition-all duration-200 hover:bg-brand-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Saiba Mais
-                     </a>
-                  </div>
-                  <div class="mt-12 flex flex-wrap justify-center lg:justify-start gap-4 lg:gap-6 text-sm text-gray-600">
-                  
-                     <div class="flex items-center gap-2 group">
-                        <div
-                           class="w-8 h-8 bg-brand-50 border border-brand-100 rounded-full flex items-center justify-center shadow-sm flex-shrink-0 group-hover:bg-brand-600 group-hover:border-brand-600 transition-colors duration-300">
-                           <i data-lucide="heart-handshake"
-                              class="w-4 h-4 text-brand-600 group-hover:text-white transition-colors duration-300"></i>
-                        </div>
-                        <span class="font-medium whitespace-nowrap">Atendimento Humanizado</span>
-                     </div>
-                  
-                     <div class="flex items-center gap-2 group">
-                        <div
-                           class="w-8 h-8 bg-brand-50 border border-brand-100 rounded-full flex items-center justify-center shadow-sm flex-shrink-0 group-hover:bg-brand-600 group-hover:border-brand-600 transition-colors duration-300">
-                           <i data-lucide="laptop"
-                              class="w-4 h-4 text-brand-600 group-hover:text-white transition-colors duration-300"></i>
-                        </div>
-                        <span class="font-medium whitespace-nowrap">Online</span>
-                     </div>
-                  
-                     <div class="flex items-center gap-2 group">
-                        <div
-                           class="w-8 h-8 bg-brand-50 border border-brand-100 rounded-full flex items-center justify-center shadow-sm flex-shrink-0 group-hover:bg-brand-600 group-hover:border-brand-600 transition-colors duration-300">
-                           <i data-lucide="lock" class="w-4 h-4 text-brand-600 group-hover:text-white transition-colors duration-300"></i>
-                        </div>
-                        <span class="font-medium whitespace-nowrap">Sigilo Profissional</span>
-                     </div>
-                  
-                  </div>
-                  
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section>
-      <section id="sobre" class="relative py-20 overflow-hidden">
-         <div class="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-neutral-50"></div>
-         <div class="absolute top-20 right-10 w-96 h-96 bg-brand-200 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-pulse"></div>
-         <div class="absolute bottom-20 left-10 w-80 h-80 bg-accent-200 rounded-full mix-blend-multiply filter blur-2xl opacity-25 animate-pulse delay-700"></div>
-         <div class="container relative">
-            <div class="max-w-6xl mx-auto">
-               <div class="text-center mb-16">
-                  <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-gray-900 mb-4">Conheça a <span id="sobre-titulo-nome">Aline</span></h2>
-                  <div class="w-24 h-1 bg-gradient-to-r from-brand-600 to-accent-500 mx-auto rounded-full"></div>
-               </div>
-               <div class="backdrop-blur-lg bg-white/40 border border-white/20 rounded-3xl shadow-2xl p-8 lg:p-12">
-                  <div class="grid lg:grid-cols-2 gap-12 items-center">
-                     <div class="relative order-2 lg:order-1">
-                        <div class="absolute -top-6 -left-6 w-24 h-24 bg-brand-300 rounded-full opacity-30 blur-xl"></div>
-                        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-accent-300 rounded-full opacity-25 blur-xl"></div>
-                        <div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-brand-100 to-white p-2">
-                       <div class="relative w-full rounded-xl overflow-hidden">
-                       <img id="sobre-img" alt="Aline Doce - Psicóloga" src="images/perfil2.webp" class="w-full block img-quadrada">
-                      </div>
-                      </div>
-                     </div>
-                     <div class="order-1 lg:order-2 space-y-6">
-                        <div class="space-y-4">
-                           <div class="inline-flex items-center gap-2 bg-brand-100 text-brand-700 px-4 py-2 rounded-full text-sm font-medium">
-                              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                              </svg>
-                              Psicóloga <span id="sobre-tipo">Clínica</span>
-                           </div>
-                           <h3 class="text-2xl font-semibold text-gray-900">Olá! Meu nome é <span id="sobre-nome">Aline Doce</span></h3>
-                           <p id="sobre-texto" class="text-lg text-gray-700 leading-relaxed">
-                              Sou psicóloga clínica e atuo com base na Terapia Cognitivo-Comportamental (TCC) para oferecer um suporte técnico e ético em sua jornada. Minha prática é pautada pelo compromisso com a saúde mental e pelo uso de ferramentas fundamentadas para compreender seus padrões de pensamento e comportamento. Acredito que o processo terapêutico deve ser um espaço seguro e profissional de escuta qualificada, permitindo que a ciência seja o alicerce para transformações reais e duradouras em sua vida.
-<br>
-<br>Meu propósito é mostrar que é possível construir uma trajetória com muito mais leveza através da psicologia. No consultório, trabalhamos para identificar e modificar padrões que geram sobrecarga emocional, substituindo o peso das preocupações por estratégias práticas e saudáveis. O objetivo é promover o equilíbrio e a clareza mental, permitindo que você enfrente os desafios cotidianos com mais segurança e consciência, resgatando o bem-estar e a qualidade de vida em cada etapa do caminho.
-<br>
-<br>Realizo atendimentos na modalidade presencial em Recife e também de forma online, garantindo flexibilidade e cuidado onde quer que você esteja. Meu compromisso é caminhar ao seu lado, respeitando sua singularidade e oferecendo um ambiente acolhedor para o seu desenvolvimento pessoal. Se você busca um acompanhamento especializado para transformar sua relação consigo mesma e viver de forma mais equilibrada, estou à disposição para iniciarmos esse percurso profissional juntos.
-                           </p>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-brand-600/10 to-accent-500/10 rounded-2xl p-6 border border-brand-200">
-                        <p class="text-gray-800 font-medium mb-3">
-   
-   Vamos juntos explorar os caminhos que levarão ao seu bem-estar emocional e mental.
-</p>
-                           <a href="#contato" class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                              </svg>
-                              Agendar Consulta
-                           </a>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 sm:gap-4 pt-6 max-w-md mx-auto lg:mx-0">
-                        
-                           <div
-                              class="flex flex-col items-center justify-center p-2 sm:p-4 bg-white/60 border border-brand-200 rounded-2xl shadow-sm hover:shadow-md transition-all">
-                              <span class="text-base sm:text-lg font-bold text-brand-700">CRP</span>
-                              <span id="sobre-crp" class="text-[10px] sm:text-sm text-gray-600 font-medium">05/5151</span>
-                           </div>
-                        
-                           <div
-                              class="flex flex-col items-center justify-center p-2 sm:p-4 bg-white/60 border border-green-200 rounded-2xl shadow-sm hover:shadow-md transition-all">
-                              <span class="text-base sm:text-lg font-bold text-green-600">Online</span>
-                              <span class="text-[10px] sm:text-sm text-gray-600">Disponível</span>
-                           </div>
-                        
-                           
-                           <div
-                              class="flex flex-col items-center justify-center p-2 sm:p-4 bg-white/60 border border-brand-200 rounded-2xl shadow-sm hover:shadow-md transition-all">
-                              <span class="text-base sm:text-lg font-bold text-brand-600">Sigilo</span>
-                              <span class="text-[10px] sm:text-sm text-gray-600">Garantido</span>
-                           </div>
-                           
-                        
-                        </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section>
-      <section id="servicos" class="container py-20">
-         <h2 class="text-3xl sm:text-4xl font-display text-gray-900 text-center">Como posso ajudar</h2>
-      
-         <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      
-            <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-shadow group">
-               <div
-                  class="rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300"
-                  style="width: 48px; height: 48px;">
-                  <i data-lucide="brain-circuit"
-                     class="w-6 h-6 text-brand-600 group-hover:text-white transition-colors duration-300"></i>
-               </div>
-               <h3 class="text-lg font-semibold text-gray-900">Terapia Individual</h3>
-               <p class="mt-2 text-gray-600 text-sm">Acompanhamento personalizado para suas necessidades.</p>
-            </div>
-      
-            <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-shadow group">
-               <div
-                  class="rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300"
-                  style="width: 48px; height: 48px;">
-                  <i data-lucide="messages-square"
-                     class="w-6 h-6 text-brand-600 group-hover:text-white transition-colors duration-300"></i>
-               </div>
-               <h3 class="text-lg font-semibold text-gray-900">Relacionamentos</h3>
-               <p class="mt-2 text-gray-600 text-sm">Fortalecimento de vínculos e melhora da comunicação.</p>
-            </div>
-      
-            <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-shadow group">
-               <div
-                  class="rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300"
-                  style="width: 48px; height: 48px;">
-                  <i data-lucide="flower-2"
-                     class="w-6 h-6 text-brand-600 group-hover:text-white transition-colors duration-300"></i>
-               </div>
-               <h3 class="text-lg font-semibold text-gray-900">Apoio à Ansiedade</h3>
-               <p class="mt-2 text-gray-600 text-sm">Estratégias para manejo da ansiedade e do estresse.</p>
-            </div>
-      
-            <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-shadow group">
-               <div
-                  class="rounded-xl bg-brand-50 flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300"
-                  style="width: 48px; height: 48px;">
-                  <i data-lucide="heart-handshake"
-                     class="w-6 h-6 text-brand-600 group-hover:text-white transition-colors duration-300"></i>
-               </div>
-               <h3 class="text-lg font-semibold text-gray-900">Autoconhecimento</h3>
-               <p class="mt-2 text-gray-600 text-sm">Exploração de padrões e construção de novos caminhos.</p>
-            </div>
-      
-         </div>
-      </section>
-      <section id="contato" class="relative py-20 overflow-hidden">
-         <div class="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-brand-100"></div>
-         <div
-            class="absolute top-20 left-10 w-72 h-72 bg-brand-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse">
-         </div>
-         <div
-            class="absolute bottom-20 right-10 w-72 h-72 bg-accent-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-1000">
-         </div>
-      
-         <div class="container relative">
-            <div class="max-w-2xl mx-auto">
-               <div class="text-center mb-12">
-                  <h2 class="font-display text-3xl sm:text-4xl text-gray-900 mb-4">Vamos iniciar sua jornada?</h2>
-                  <p class="text-lg text-gray-600">Escolha a modalidade e agende sua consulta</p>
-               </div>
-      
-               <div class="backdrop-blur-lg bg-white/30 border border-white/20 rounded-3xl shadow-xl p-8 relative">
-               
-                  <div
-                     class="absolute left-1/2 transform -translate-x-1/2 w-20 h-20 bg-brand-600 rounded-full flex items-center justify-center shadow-lg border-white z-20"
-                     style="top: -2.5rem; border-width: 4px;">
-                     <i data-lucide="calendar-heart" class="w-10 h-10 text-white"></i>
-                  </div>
-               
-                  <form id="whatsapp-form" class="space-y-6" style="margin-top: 4rem;" data-whatsapp="77999340546">
-               
-                     <div class="space-y-2">
-                        <label for="name" class="block text-sm font-medium text-gray-700">Seu nome</label>
-                        <input type="text" id="name" required
-                           class="w-full px-4 py-3 rounded-2xl bg-white/50 border border-white/30 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-transparent transition-all placeholder-gray-500"
-                           placeholder="Como posso te chamar?">
-                     </div>
-               
-                     <div class="space-y-3">
-                        <label class="block text-sm font-medium text-gray-700">Preferência de atendimento</label>
-                     
-                        
-                        <div
-                           class="w-full px-4 py-4 rounded-2xl border-2 border-brand-600 bg-brand-50 text-brand-700 shadow-sm flex flex-col items-center gap-2 cursor-default">
-                           <i data-lucide="laptop" class="w-6 h-6 text-brand-600"></i>
-                           <span class="font-medium">Atendimento Online</span>
-                        </div>
-                     
-                        <div class="text-sm text-brand-700 bg-brand-50/80 rounded-xl p-3 text-center border border-brand-100">
-                           <span class="font-bold">Ótima escolha!</span> Atendimento via videochamada no conforto da sua casa.
-                        </div>
-                     
-                        <input type="hidden" id="modo-fixo" value="online">
-                        
-                     </div>
-               
-                     <button type="submit" id="submit-btn"
-                        class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-4 px-6 rounded-2xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
-                        <span>Chamar no WhatsApp</span>
-                        <i data-lucide="send" class="w-4 h-4"></i>
-                     </button>
-                  </form>
-               
-                  <div class="mt-8 pt-6 border-t border-white/20 text-center">
-                     <p class="text-sm text-gray-600">Seus dados não serão salvos. O link abrirá direto no app.</p>
-                  </div>
-               </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section>
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-name">Dra. Ana Beatriz</div>
+  <div class="loader-line"></div>
+  <div id="loaderButterflies" style="position:absolute;inset:0;pointer-events:none;"></div>
+</div>
 
+<!-- BUTTERFLIES LAYER -->
+<div class="butterfly-container" id="butterflyContainer"></div>
 
-<section id="extras" class="py-20 bg-brand-50 relative overflow-hidden">
-   <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-200 to-transparent"></div>
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Ana <span>Beatriz</span> Fontes</a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#especialidades">Especialidades</a></li>
+    <li><a href="#processo">Processo</a></li>
+    <li><a href="#depoimentos">Depoimentos</a></li>
+  </ul>
+  <a href="#contato" class="nav-cta">Agendar Consulta</a>
+</nav>
 
-   <div class="container relative z-10">
-      <div class="text-center mb-12">
-         <h2 class="font-display text-3xl sm:text-4xl text-gray-900 mb-4">Acervo Terapêutico</h2>
-         <p class="text-lg text-gray-600 max-w-2xl mx-auto">Uma curadoria de materiais e vivências para fortalecer sua
-            caminhada.</p>
-         <div class="w-24 h-1 bg-gradient-to-r from-brand-600 to-accent-500 mx-auto mt-6 rounded-full"></div>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Psicóloga Clínica · CRP 06/000000</div>
+    <h1 class="hero-h1">
+      Cuidar da sua<br>
+      mente é o maior<br>
+      <em>ato de amor</em><br>
+      por si mesmo.
+    </h1>
+    <p class="hero-desc">
+      Acompanhamento psicológico individual com abordagem humanizada, integrando técnicas de ponta para que você alcance equilíbrio emocional e qualidade de vida.
+    </p>
+    <div class="hero-actions">
+      <a href="#contato" class="btn-primary">Agendar Primeira Consulta</a>
+      <a href="#sobre" class="btn-ghost">
+        Conhecer mais
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">12+</div>
+        <div class="stat-label">Anos de experiência</div>
       </div>
-
-      <div id="acervo-lista-site" class="max-w-2xl mx-auto space-y-4">
-
-         
-         <a href="https://google.com" target="_blank"
-            class="group block w-full bg-white hover:bg-brand-600 border border-brand-200 hover:border-brand-600 rounded-2xl p-4 transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1">
-            <div class="flex items-center justify-between">
-               <div class="flex-1 flex items-center gap-3 sm:gap-4">
-                  <div
-                     class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center transition-colors">
-                     <i data-lucide="book-heart" class="w-6 h-6"></i>
-                  </div>
-                  <div class="text-left">
-                     <h3 class="font-bold text-gray-800 group-hover:text-white transition-colors">Caderno de Atividades
-                     </h3>
-                     <p class="text-xs text-gray-500 group-hover:text-brand-100 transition-colors">Guia de apoio emocional para o puerpério
-                     </p>
-                  </div>
-               </div>
-               <i data-lucide="chevron-right"
-                  class="w-5 h-5 text-brand-300 group-hover:text-white transition-colors"></i>
-            </div>
-         </a>
-         
-         <a href="https://google.com" target="_blank"
-            class="group block w-full bg-white hover:bg-brand-600 border border-brand-200 hover:border-brand-600 rounded-2xl p-4 transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1">
-            <div class="flex items-center justify-between">
-               <div class="flex-1 flex items-center gap-3 sm:gap-4">
-                  <div
-                     class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center transition-colors">
-                     <i data-lucide="layers" class="w-6 h-6"></i>
-                  </div>
-                  <div class="text-left">
-                     <h3 class="font-bold text-gray-800 group-hover:text-white transition-colors">Baralho Terapêutico
-                     </h3>
-                     <p class="text-xs text-gray-500 group-hover:text-brand-100 transition-colors">Cartas sistêmicas para insights
-                     </p>
-                  </div>
-               </div>
-               <i data-lucide="chevron-right"
-                  class="w-5 h-5 text-brand-300 group-hover:text-white transition-colors"></i>
-            </div>
-         </a>
-         
-         <a href="https://google.com" target="_blank"
-            class="group block w-full bg-white hover:bg-brand-600 border border-brand-200 hover:border-brand-600 rounded-2xl p-4 transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1">
-            <div class="flex items-center justify-between">
-               <div class="flex-1 flex items-center gap-3 sm:gap-4">
-                  <div
-                     class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-white/20 group-hover:text-white flex items-center justify-center transition-colors">
-                     <i data-lucide="users" class="w-6 h-6"></i>
-                  </div>
-                  <div class="text-left">
-                     <h3 class="font-bold text-gray-800 group-hover:text-white transition-colors">Comunidade VIP
-                     </h3>
-                     <p class="text-xs text-gray-500 group-hover:text-brand-100 transition-colors">Grupo de mentoria no WhatsApp
-                     </p>
-                  </div>
-               </div>
-               <i data-lucide="chevron-right"
-                  class="w-5 h-5 text-brand-300 group-hover:text-white transition-colors"></i>
-            </div>
-         </a>
-         
-
+      <div>
+        <div class="stat-num">800+</div>
+        <div class="stat-label">Pacientes atendidos</div>
       </div>
-   </div>
+      <div>
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Índice de satisfação</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-wrap">
+      <img src="perfil1.webp" alt="Dra. Ana Beatriz Fontes — Psicóloga">
+    </div>
+    <div class="hero-photo-name">
+      <div class="photo-name-text">Dra. Ana Beatriz Fontes</div>
+      <div class="photo-crp">Psicóloga Clínica · CRP 06/000000</div>
+    </div>
+    <div class="hero-deco-circle"></div>
+  </div>
 </section>
 
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="about-visual reveal">
+    <div class="about-img-wrap">
+      <img src="perfil2.webp" alt="Dra. Ana Beatriz Fontes">
+    </div>
+    <div class="about-deco-rect"></div>
+    <div class="about-badge">
+      <div class="badge-num">12</div>
+      <div class="badge-text">Anos de<br>prática clínica</div>
+    </div>
+  </div>
+  <div class="about-content reveal reveal-delay-2">
+    <div class="section-tag">Quem sou eu</div>
+    <h2 class="section-h2">
+      Psicologia que <em>transforma</em><br>através do autoconhecimento
+    </h2>
+    <p class="about-text">
+      Sou psicóloga formada pela USP, com especialização em Terapia Cognitivo-Comportamental e pós-graduação em Neuropsicologia. Acredito que cada pessoa carrega em si mesma a capacidade de se curar e se reinventar.
+    </p>
+    <p class="about-text">
+      Meu trabalho é criar um espaço seguro, acolhedor e sem julgamentos onde você possa explorar seus pensamentos, emoções e padrões de comportamento com liberdade e confiança.
+    </p>
+    <div class="about-quals">
+      <div class="qual-item"><div class="qual-dot"></div><div class="qual-text">Graduação em Psicologia — USP</div></div>
+      <div class="qual-item"><div class="qual-dot"></div><div class="qual-text">Especialização em TCC</div></div>
+      <div class="qual-item"><div class="qual-dot"></div><div class="qual-text">Pós em Neuropsicologia</div></div>
+      <div class="qual-item"><div class="qual-dot"></div><div class="qual-text">Atendimento presencial e online</div></div>
+      <div class="qual-item"><div class="qual-dot"></div><div class="qual-text">Membro do CFP</div></div>
+      <div class="qual-item"><div class="qual-dot"></div><div class="qual-text">Formação em Mindfulness</div></div>
+    </div>
+  </div>
+</section>
 
-      <section id="duvidas" class="relative py-20 overflow-hidden">
-         <div class="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-accent-50"></div>
-         <div class="absolute top-20 left-10 w-80 h-80 bg-accent-200 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-pulse"></div>
-         <div class="absolute bottom-20 right-10 w-96 h-96 bg-brand-200 rounded-full mix-blend-multiply filter blur-2xl opacity-25 animate-pulse delay-1000"></div>
-         <div class="container relative">
-            <div class="max-w-6xl mx-auto">
-               <div class="text-center mb-16">
-                  <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-gray-900 mb-4">Dúvidas Frequentes</h2>
-                  <p class="text-lg text-gray-600 max-w-2xl mx-auto">Esclarecemos as principais dúvidas sobre o processo terapêutico e nossos atendimentos</p>
-                  <div class="w-24 h-1 bg-gradient-to-r from-brand-600 to-accent-500 mx-auto mt-6 rounded-full"></div>
-               </div>
-               <div class="bg-white/95 border border-white/20 rounded-3xl shadow-2xl p-4 sm:p-8">
-                  <div id="faq-lista-site" class="space-y-4">
-               
-                    
-                     
-                     <div
-                        class="bg-white/50 border border-white/30 rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                        <button class="w-full px-4 py-5 sm:px-6 text-left flex items-center justify-between hover:bg-white/20 transition-colors">
-                           <div class="flex-1 flex items-center gap-3 sm:gap-4">
-                              <div class="text-brand-600">
-                                 <i data-lucide="clock" class="w-7 h-7"></i>
-                              </div>
-                              <h3 id="faq-pergunta-0" class="text-lg font-semibold text-gray-900">Como funcionam as sessões de psicoterapia?
-                              </h3>
-                           </div>
-                           <div
-                              class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center transition-transform duration-200">
-                              <svg class="w-4 h-4 text-brand-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                              </svg>
-                           </div>
-                        </button>
-                     
-                        <div class="faq-wrapper">
-                           <div class="faq-inner px-6 pb-6">
-                              <div class="w-full text-justify">
-                                 <p id="faq-resposta-0" class="text-gray-700 leading-relaxed">As sessões têm duração de 50 minutos e podem ser realizadas tanto online quanto presencialmente. Durante o atendimento, oferecemos um espaço seguro e acolhedor para você se expressar livremente, trabalhando em conjunto para alcançar seus objetivos terapêuticos.</p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     
-                     <div
-                        class="bg-white/50 border border-white/30 rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                        <button class="w-full px-4 py-5 sm:px-6 text-left flex items-center justify-between hover:bg-white/20 transition-colors">
-                           <div class="flex-1 flex items-center gap-3 sm:gap-4">
-                              <div class="text-brand-600">
-                                 <i data-lucide="credit-card" class="w-7 h-7"></i>
-                              </div>
-                              <h3 id="faq-pergunta-1" class="text-lg font-semibold text-gray-900">Atende por convênios médicos?
-                              </h3>
-                           </div>
-                           <div
-                              class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center transition-transform duration-200">
-                              <svg class="w-4 h-4 text-brand-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                              </svg>
-                           </div>
-                        </button>
-                     
-                        <div class="faq-wrapper">
-                           <div class="faq-inner px-6 pb-6">
-                              <div class="w-full text-justify">
-                                 <p id="faq-resposta-1" class="text-gray-700 leading-relaxed">Trabalho de forma particular, mas forneço recibo que pode ser utilizado para reembolso em alguns planos de saúde. Recomendo verificar com seu convênio sobre a cobertura para consultas psicológicas particulares.</p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     
-                     <div
-                        class="bg-white/50 border border-white/30 rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                        <button class="w-full p-6 text-left flex items-center justify-between hover:bg-white/20 transition-colors">
-                           <div class="flex-1 flex items-center gap-3 sm:gap-4">
-                              <div class="text-brand-600">
-                                 <i data-lucide="calendar" class="w-7 h-7"></i>
-                              </div>
-                              <h3 id="faq-pergunta-2" class="text-lg font-semibold text-gray-900">Como agendar uma consulta?
-                              </h3>
-                           </div>
-                           <div
-                              class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center transition-transform duration-200">
-                              <svg class="w-4 h-4 text-brand-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                              </svg>
-                           </div>
-                        </button>
-                     
-                        <div class="faq-wrapper">
-                           <div class="faq-inner px-6 pb-6">
-                              <div class="w-full text-justify">
-                                 <p id="faq-resposta-2" class="text-gray-700 leading-relaxed">Você pode agendar através do nosso formulário de contato no site ou entrando em contato diretamente pelo WhatsApp. Respondo rapidamente e podemos encontrar um horário que se adeque à sua agenda.</p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     
-                     <div
-                        class="bg-white/50 border border-white/30 rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                        <button class="w-full p-6 text-left flex items-center justify-between hover:bg-white/20 transition-colors">
-                           <div class="flex-1 flex items-center gap-3 sm:gap-4">
-                              <div class="text-brand-600">
-                                 <i data-lucide="laptop" class="w-7 h-7"></i>
-                              </div>
-                              <h3 id="faq-pergunta-3" class="text-lg font-semibold text-gray-900">Atendimento online é tão eficaz quanto presencial?
-                              </h3>
-                           </div>
-                           <div
-                              class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center transition-transform duration-200">
-                              <svg class="w-4 h-4 text-brand-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                              </svg>
-                           </div>
-                        </button>
-                     
-                        <div class="faq-wrapper">
-                           <div class="faq-inner px-6 pb-6">
-                              <div class="w-full text-justify">
-                                 <p id="faq-resposta-3" class="text-gray-700 leading-relaxed">Sim! O atendimento online tem se mostrado muito eficaz e oferece várias vantagens como maior comodidade e flexibilidade. Uso plataformas seguras e o ambiente virtual não compromete a qualidade do acolhimento e do processo terapêutico.</p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     
-                     <div
-                        class="bg-white/50 border border-white/30 rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                        <button class="w-full p-6 text-left flex items-center justify-between hover:bg-white/20 transition-colors">
-                           <div class="flex-1 flex items-center gap-3 sm:gap-4">
-                              <div class="text-brand-600">
-                                 <i data-lucide="hourglass" class="w-7 h-7"></i>
-                              </div>
-                              <h3 id="faq-pergunta-4" class="text-lg font-semibold text-gray-900">Quanto tempo dura o processo terapêutico?
-                              </h3>
-                           </div>
-                           <div
-                              class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center transition-transform duration-200">
-                              <svg class="w-4 h-4 text-brand-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                              </svg>
-                           </div>
-                        </button>
-                     
-                        <div class="faq-wrapper">
-                           <div class="faq-inner px-6 pb-6">
-                              <div class="w-full text-justify">
-                                 <p id="faq-resposta-4" class="text-gray-700 leading-relaxed">Cada processo é único e depende dos objetivos individuais de cada pessoa. Algumas questões podem ser trabalhadas em algumas sessões, enquanto outras podem necessitar de um acompanhamento mais longo. Respeitamos sempre o seu ritmo e necessidades.</p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     
-                  </div>
-               
-                  <div class="mt-12 text-center">
-                     <div class="bg-gradient-to-r from-brand-600/10 to-accent-500/10 rounded-2xl p-8 border border-brand-200">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Ainda tem dúvidas?</h3>
-                        <p class="text-gray-700 mb-6">Entre em contato comigo pelo WhatsApp. Ficarei feliz em esclarecer todas as suas
-                           questões!</p>
-                        <a href="#contato"
-                           class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium">
-                           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                              <path
-                                 d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.687">
-                              </path>
-                           </svg>
-                           Entrar em Contato
-                        </a>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section>
-      <footer class="relative bg-gradient-to-br from-neutral-900 via-neutral-800 to-brand-900 text-white overflow-hidden">
-         <div class="absolute inset-0 opacity-50"><div class="w-full h-full" style="background-image:url(" data:image="" svg+xml,%3csvg="" width="60" height="60" viewbox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" %3e%3cg="" fill="none" fill-rule="evenodd" fill-opacity="0.03" %3e%3ccircle="" cx="30" cy="30" r="1" %3e%3c="" g%3e%3c="" svg%3e")"=""></div>
-         </div>
-         <div class="absolute top-10 left-10 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl"></div>
-         <div class="absolute bottom-10 right-10 w-40 h-40 bg-accent-500/10 rounded-full blur-2xl"></div>
-         <div class="container relative" style="padding-top: 55px; padding-bottom: 30px;">
-            <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-6">
-               <div class="lg:col-span-2">
-                  <h3 id="footer-nome" class="text-xl font-semibold mb-4 text-white">Aline Doce</h3>
-                  <p id="footer-texto" class="text-neutral-300 mb-6 leading-relaxed">Suporte psicológico especializado e humanizado. Cuidando da sua saúde mental e do seu bem-estar emocional de forma personalizada.</p>
-                  <div class="flex items-center gap-4">
-                     <div class="flex items-center gap-2 text-sm">
-                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span class="text-neutral-300">Disponível para consultas</span>
-                     </div>
-                     <div class="text-sm text-neutral-400">CRP <span id="footer-crp">05/5151</span></div>
-                  </div>
-               </div>
-               
-               <div>
-                  <h4 class="font-semibold mb-4 text-white">Redes</h4>
-                  <div class="space-y-4">
-                     <a id="btn-zap-footer" href="https://wa.me/77999340546" target="_blank" rel="noreferrer" class="flex items-center gap-3 text-neutral-300 hover:text-green-400 transition-colors group">
-                        <div class="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
-                           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.687"></path>
-                           </svg>
-                        </div>
-                        <div>
-                           <div class="text-sm font-medium">WhatsApp</div>
-                           <div id="footer-zap" class="text-xs text-neutral-400">(77) 99934-0546</div>
-                        </div>
+<!-- ESPECIALIDADES -->
+<section id="especialidades">
+  <div class="esp-header reveal">
+    <div class="esp-tag">Áreas de atuação</div>
+    <h2 class="esp-h2">Cada desafio merece uma<br><em>abordagem singular</em></h2>
+  </div>
+  <div class="esp-grid">
+    <div class="esp-card reveal reveal-delay-1">
+      <div class="esp-num">01</div>
+      <svg class="esp-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="24" cy="20" r="12"/><path d="M8 40c0-8.84 7.16-16 16-16s16 7.16 16 16"/></svg>
+      <h3 class="esp-title">Ansiedade & Estresse</h3>
+      <p class="esp-desc">Ferramentas práticas para gerenciar pensamentos ansiosos, regular emoções e recuperar a leveza no dia a dia.</p>
+    </div>
+    <div class="esp-card reveal reveal-delay-2">
+      <div class="esp-num">02</div>
+      <svg class="esp-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M24 4C13 4 4 13 4 24s9 20 20 20 20-9 20-20S35 4 24 4z"/><path d="M24 16v8l6 4"/></svg>
+      <h3 class="esp-title">Depressão</h3>
+      <p class="esp-desc">Acolhimento especializado para atravessar períodos difíceis, reconstruir a autoestima e encontrar significado e motivação.</p>
+    </div>
+    <div class="esp-card reveal reveal-delay-3">
+      <div class="esp-num">03</div>
+      <svg class="esp-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M24 4l5.09 10.26L40 15.27l-8 7.79 1.89 11L24 28.77l-9.89 5.29L16 23.06l-8-7.79 10.91-1.01z"/></svg>
+      <h3 class="esp-title">Autoconhecimento</h3>
+      <p class="esp-desc">Um processo de descoberta profunda dos seus valores, crenças e potencial para viver de forma mais autêntica e plena.</p>
+    </div>
+    <div class="esp-card reveal reveal-delay-1">
+      <div class="esp-num">04</div>
+      <svg class="esp-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M32 20c0-4.4-3.6-8-8-8s-8 3.6-8 8c0 3.2 1.9 6 4.7 7.4l-2.7 12.6h12l-2.7-12.6c2.8-1.4 4.7-4.2 4.7-7.4z"/></svg>
+      <h3 class="esp-title">Relacionamentos</h3>
+      <p class="esp-desc">Trabalho terapêutico para padrões afetivos, comunicação, vínculos saudáveis e relações mais equilibradas.</p>
+    </div>
+    <div class="esp-card reveal reveal-delay-2">
+      <div class="esp-num">05</div>
+      <svg class="esp-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="8" y="8" width="32" height="32" rx="4"/><path d="M16 24h16M24 16v16"/></svg>
+      <h3 class="esp-title">Luto & Perdas</h3>
+      <p class="esp-desc">Suporte humanizado nos processos de perda, facilitando a elaboração e a reconexão com a vida e seus prazeres.</p>
+    </div>
+    <div class="esp-card reveal reveal-delay-3">
+      <div class="esp-num">06</div>
+      <svg class="esp-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 36l8-8 8 8 8-8"/><path d="M4 24C4 13 13 4 24 4s20 9 20 20-9 20-20 20S4 35 4 24z"/></svg>
+      <h3 class="esp-title">Desenvolvimento Pessoal</h3>
+      <p class="esp-desc">Potencializar habilidades, superar bloqueios e construir a versão mais realizada e consciente de você mesmo.</p>
+    </div>
+  </div>
+</section>
 
-                        <a id="btn-insta-footer" href="https://www.instagram.com/alinecaicedo" target="_blank" rel="noreferrer" class="flex items-center gap-3 text-neutral-300 hover:text-brand-300 transition-colors group">
-   <div class="w-8 h-8 bg-brand-600/20 rounded-full flex items-center justify-center group-hover:bg-brand-600/30 transition-colors">
-      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-      </svg>
-   </div>
-   <div>
-      <div class="text-sm font-medium">Instagram</div>
-      <div id="footer-insta" class="text-xs text-neutral-400">@alinecaicedo</div>
-   </div>
+<!-- PROCESSO -->
+<section id="processo">
+  <div class="processo-inner">
+    <div class="reveal">
+      <div class="section-tag">Como funciona</div>
+      <h2 class="section-h2">Uma jornada<br>pensada <em>para você</em></h2>
+      <div class="processo-steps" style="margin-top:44px;">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div>
+            <div class="step-title">Consulta de Acolhimento</div>
+            <p class="step-desc">Primeiro encontro para nos conhecermos, entender suas demandas e definir juntos os objetivos do trabalho.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div>
+            <div class="step-title">Plano Personalizado</div>
+            <p class="step-desc">Elaboro uma proposta terapêutica sob medida para o seu momento de vida e suas necessidades específicas.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div>
+            <div class="step-title">Acompanhamento Contínuo</div>
+            <p class="step-desc">Sessões regulares com evolução acompanhada, ajustando abordagens conforme você avança em sua jornada.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div>
+            <div class="step-title">Conquista & Consolidação</div>
+            <p class="step-desc">Preparação para encerrar o ciclo com autonomia emocional, ferramentas internalizadas e bem-estar sustentável.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="processo-quote reveal reveal-delay-2">
+      <blockquote class="quote-text">
+        "A terapia não é sobre consertar o que está quebrado. É sobre descobrir o que sempre esteve inteiro dentro de você."
+      </blockquote>
+      <div class="quote-author">— Dra. Ana Beatriz Fontes</div>
+      <div class="quote-deco"></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section id="depoimentos">
+  <div class="dep-header reveal">
+    <div class="dep-tag">Depoimentos</div>
+    <h2 class="dep-h2">Histórias que <em>inspiram</em></h2>
+  </div>
+  <div class="dep-grid">
+    <div class="dep-card reveal reveal-delay-1">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">"Depois de anos carregando um peso enorme sozinha, encontrar a Ana Beatriz foi um divisor de águas. Hoje me sinto leve e capaz de enfrentar qualquer desafio."</p>
+      <div class="dep-author">
+        <div class="dep-avatar"></div>
+        <div><div class="dep-name">Mariana S.</div><div class="dep-role">Executiva · 2 anos de acompanhamento</div></div>
+      </div>
+    </div>
+    <div class="dep-card reveal reveal-delay-2">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">"A abordagem da doutora é completamente diferente. Ela não só escuta — ela entende, e isso faz toda a diferença no processo. Me transformei completamente."</p>
+      <div class="dep-author">
+        <div class="dep-avatar"></div>
+        <div><div class="dep-name">Roberto L.</div><div class="dep-role">Empresário · 18 meses de acompanhamento</div></div>
+      </div>
+    </div>
+    <div class="dep-card reveal reveal-delay-3">
+      <div class="dep-stars">★★★★★</div>
+      <p class="dep-text">"Cheguei em crise de ansiedade, sem conseguir dormir ou trabalhar. Hoje tenho ferramentas reais para lidar com tudo e uma qualidade de vida que nunca imaginei ter."</p>
+      <div class="dep-author">
+        <div class="dep-avatar"></div>
+        <div><div class="dep-name">Camila R.</div><div class="dep-role">Designer · 1 ano de acompanhamento</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section id="contato">
+  <div class="cta-text reveal">
+    <div class="section-tag">Vamos conversar</div>
+    <h2 class="section-h2">O primeiro passo é<br>o mais <em>corajoso</em></h2>
+    <p class="cta-desc">
+      Agende sua consulta de acolhimento e descubra como a psicoterapia pode transformar a sua vida. Atendo presencialmente em São Paulo e online para todo o Brasil.
+    </p>
+    <div class="cta-info">
+      <div class="info-item">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <div class="info-label">Endereço</div>
+          <div class="info-text">Rua dos Pinheiros, 850 — Conjunto 42<br>Pinheiros, São Paulo · SP</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+        </div>
+        <div>
+          <div class="info-label">WhatsApp</div>
+          <div class="info-text">(11) 99999-0000</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        </div>
+        <div>
+          <div class="info-label">E-mail</div>
+          <div class="info-text">contato@draanabeatriz.com.br</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div>
+          <div class="info-label">Horários</div>
+          <div class="info-text">Segunda a Sexta: 8h às 19h<br>Sábado: 8h às 13h</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cta-form reveal reveal-delay-2">
+    <h3 class="form-title">Agendar Consulta</h3>
+    <p class="form-sub">Preencha e retornamos em até 2 horas</p>
+    <div class="form-group">
+      <label class="form-label">Nome completo</label>
+      <input type="text" class="form-input" placeholder="Seu nome">
+    </div>
+    <div class="form-group">
+      <label class="form-label">WhatsApp</label>
+      <input type="tel" class="form-input" placeholder="(11) 99999-9999">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Área de interesse</label>
+      <select class="form-select">
+        <option value="" disabled selected>Selecione...</option>
+        <option>Ansiedade & Estresse</option>
+        <option>Depressão</option>
+        <option>Relacionamentos</option>
+        <option>Autoconhecimento</option>
+        <option>Desenvolvimento Pessoal</option>
+        <option>Outro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Modalidade</label>
+      <select class="form-select">
+        <option>Presencial — São Paulo</option>
+        <option>Online — Videochamada</option>
+      </select>
+    </div>
+    <button class="form-btn"><span>Solicitar Agendamento</span></button>
+    <p class="form-privacy">🔒 Suas informações são totalmente confidenciais</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Ana <span>Beatriz</span> Fontes</div>
+  <ul class="footer-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#especialidades">Especialidades</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 · CRP 06/000000 · Todos os direitos reservados</div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/5511999990000" class="whatsapp-float" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
 </a>
 
+<script>
+  /* ── LOADER ── */
+  window.addEventListener('load', () => {
+    setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 2600);
+  });
 
-<a href="https://www.tiktok.com/@alinecaicedo" target="_blank" rel="noreferrer"
-   class="flex items-center gap-3 text-neutral-300 hover:text-brand-300 transition-colors group">
-   <div
-      class="w-8 h-8 bg-brand-600/20 rounded-full flex items-center justify-center group-hover:bg-brand-600/30 transition-colors">
-      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-         <path
-            d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z" />
-      </svg>
-   </div>
-   <div>
-      <div class="text-sm font-medium">TikTok</div>
-      <div class="text-xs text-neutral-400">@alinecaicedo</div>
-   </div>
-</a>
+  /* ── BUTTERFLY SVG PATH ── */
+  // Elegant minimal gold outline butterfly (two wing pairs)
+  function makeButterflySVG(size, opacity, strokeW) {
+    return `<svg width="${size}" height="${size*0.72}" viewBox="0 0 80 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- upper wings -->
+      <path d="M40 29 C35 20, 18 8, 6 14 C-4 20, 4 36, 15 34 C24 32, 34 28, 40 29Z" 
+            stroke="#C4A96A" stroke-width="${strokeW}" fill="none" stroke-linejoin="round"/>
+      <path d="M40 29 C45 20, 62 8, 74 14 C84 20, 76 36, 65 34 C56 32, 46 28, 40 29Z" 
+            stroke="#C4A96A" stroke-width="${strokeW}" fill="none" stroke-linejoin="round"/>
+      <!-- lower wings -->
+      <path d="M40 29 C34 34, 20 38, 12 46 C6 52, 14 60, 22 56 C30 52, 37 38, 40 29Z" 
+            stroke="#C4A96A" stroke-width="${strokeW}" fill="none" stroke-linejoin="round" opacity="0.8"/>
+      <path d="M40 29 C46 34, 60 38, 68 46 C74 52, 66 60, 58 56 C50 52, 43 38, 40 29Z" 
+            stroke="#C4A96A" stroke-width="${strokeW}" fill="none" stroke-linejoin="round" opacity="0.8"/>
+      <!-- body -->
+      <path d="M40 18 Q41 29 40 42" stroke="#C4A96A" stroke-width="${strokeW*0.8}" stroke-linecap="round"/>
+      <!-- antennae -->
+      <path d="M40 18 Q36 10 32 6" stroke="#C4A96A" stroke-width="${strokeW*0.6}" stroke-linecap="round" opacity="0.7"/>
+      <path d="M40 18 Q44 10 48 6" stroke="#C4A96A" stroke-width="${strokeW*0.6}" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="32" cy="6" r="1.2" fill="#C4A96A" opacity="0.7"/>
+      <circle cx="48" cy="6" r="1.2" fill="#C4A96A" opacity="0.7"/>
+    </svg>`;
+  }
 
+  /* ── LOADER BUTTERFLIES ── */
+  function spawnLoaderButterflies() {
+    const container = document.getElementById('loaderButterflies');
+    const count = 6;
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'loader-butterfly';
+        const size = 30 + Math.random() * 30;
+        const startX = 20 + Math.random() * 60; // % from left
+        const startY = 30 + Math.random() * 40; // % from top
+        const dx = (Math.random() - 0.5) * 300;
+        const dy = -80 - Math.random() * 200;
+        const dur = 2.2 + Math.random() * 1.2;
+        el.style.cssText = `left:${startX}%;top:${startY}%;--lx:${dx}px;--ly:${dy}px;
+          animation-duration:${dur}s;animation-delay:0s;`;
+        el.innerHTML = makeButterflySVG(size, 0.9, 1.4);
+        container.appendChild(el);
+        setTimeout(() => el.remove(), dur * 1000 + 100);
+      }, i * 280 + 600);
+    }
+  }
+  spawnLoaderButterflies();
 
-                  </div>
-                  
-               </div>
-            </div>
-            <div class="border-t border-neutral-700 pt-8">
-               <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                  <div class="text-center md:text-left">
-                     <p class="text-sm text-neutral-400">
-                        © <span id="ano-atual">2025</span> <span id="footer-copy-nome">Aline Doce</span>. Todos os direitos reservados.
-                     </p>
-                  </div>
-                  
-               </div>
-            </div>
-         </div>
-      </footer>
-      <script>
-         // Inicializa os ícones Lucide assim que a página carrega
-         if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-         }
-      </script>
+  /* ── FLOATING BUTTERFLIES (site) ── */
+  const bContainer = document.getElementById('butterflyContainer');
+  const BFY_COUNT = 9;
+  const butterflies = [];
 
-      <script>
-         // Atualiza o ano automaticamente para o ano atual do dispositivo
-         document.getElementById("ano-atual").textContent = new Date().getFullYear();
-      </script>
-   </body>
+  function rnd(min, max) { return min + Math.random() * (max - min); }
+  function rndSign() { return Math.random() > 0.5 ? 1 : -1; }
 
+  function createButterfly() {
+    const el = document.createElement('div');
+    el.className = 'butterfly';
+    const size = rnd(22, 52);
+    const opacity = rnd(0.18, 0.55);
+    const strokeW = size < 32 ? 1.2 : 1.6;
+    el.innerHTML = makeButterflySVG(size, opacity, strokeW);
+
+    // Random start position
+    const startX = rnd(0, window.innerWidth);
+    const startY = rnd(0, window.innerHeight);
+
+    // Random waypoints for organic flight path
+    const spread = rnd(120, 340);
+    const dx1 = rndSign() * rnd(40, spread);
+    const dy1 = rndSign() * rnd(30, spread * 0.7);
+    const dx2 = rndSign() * rnd(60, spread * 1.2);
+    const dy2 = rndSign() * rnd(40, spread);
+    const dx3 = rndSign() * rnd(30, spread);
+    const dy3 = rndSign() * rnd(50, spread * 0.8);
+    const dx4 = rndSign() * rnd(80, spread * 1.5);
+    const dy4 = rndSign() * rnd(60, spread);
+    const r1 = rndSign() * rnd(5, 25);
+    const r2 = rndSign() * rnd(8, 30);
+    const r3 = rndSign() * rnd(5, 20);
+    const r4 = rndSign() * rnd(10, 28);
+
+    const duration = rnd(14, 30);
+    const delay = rnd(0, 12);
+    const wingSpeed = rnd(0.28, 0.55);
+
+    el.style.cssText = `
+      left:${startX}px; top:${startY}px;
+      --dx1:${dx1}px; --dy1:${dy1}px;
+      --dx2:${dx2}px; --dy2:${dy2}px;
+      --dx3:${dx3}px; --dy3:${dy3}px;
+      --dx4:${dx4}px; --dy4:${dy4}px;
+      --r1:${r1}deg; --r2:${r2}deg; --r3:${r3}deg; --r4:${r4}deg;
+      animation-duration:${duration}s;
+      animation-delay:${delay}s;
+      opacity:0;
+    `;
+    el.querySelector('svg').style.animationDuration = wingSpeed + 's';
+    bContainer.appendChild(el);
+    butterflies.push({ el, duration, delay });
+
+    // Respawn after animation cycle
+    setTimeout(() => {
+      el.remove();
+      const idx = butterflies.findIndex(b => b.el === el);
+      if (idx > -1) butterflies.splice(idx, 1);
+      createButterfly();
+    }, (duration + delay) * 1000 + 500);
+  }
+
+  // Spawn with slight stagger
+  for (let i = 0; i < BFY_COUNT; i++) {
+    setTimeout(createButterfly, i * 600);
+  }
+
+  /* ── CURSOR ── */
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = mouseX - 4 + 'px';
+    cursor.style.top = mouseY - 4 + 'px';
+  });
+  function animRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    ring.style.left = ringX - 16 + 'px';
+    ring.style.top = ringY - 16 + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+  document.querySelectorAll('a, button, input, select').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2.5)'; ring.style.transform = 'scale(1.5)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; ring.style.transform = 'scale(1)'; });
+  });
+
+  /* ── NAV SCROLL ── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); });
+
+  /* ── REVEAL ── */
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  /* ── SMOOTH SCROLL ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
 </html>
-
-
-
-
-
-
-
-
-
